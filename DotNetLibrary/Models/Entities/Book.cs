@@ -1,4 +1,4 @@
-namespace Models.Entities;
+namespace DotNetLibrary.Models.Entities;
 
 public class Book
 {
@@ -8,5 +8,5 @@ public class Book
     public DateOnly PublicationDate { get; init; }
     public string Publisher { get; init; }
 
-    public virtual ICollection<BookCategory> Categories { get; } = [];
+    public virtual ICollection<BookCategory> BookCategories { get; init; } = [];
 }

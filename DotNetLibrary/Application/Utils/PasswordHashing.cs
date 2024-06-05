@@ -1,13 +1,13 @@
 using BCrypt.Net;
 
-namespace Application.Utils;
+namespace DotNetLibrary.Application.Utils;
 
-public static class PasswordHash
+public static class PasswordHashing
 {
     private const int WorkFactor = 18;
     private const HashType HashType = BCrypt.Net.HashType.SHA384;
 
-    public static string NewPassword(string password) =>
+    public static string HashPassword(string password) =>
         BCrypt.Net.BCrypt.EnhancedHashPassword(password, WorkFactor, HashType);
 
     public static bool VerifyPassword(string password, string hash) =>

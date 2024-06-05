@@ -1,11 +1,18 @@
-using Application.Abstractions;
-using Models.Entities;
+using DotNetLibrary.Application.Abstractions;
+using DotNetLibrary.Models.Entities;
 
-namespace Application.Models.DTOs;
+namespace DotNetLibrary.Application.Models.DTOs;
 
-public class BookDTO(string isbn, string title, string author, DateOnly publicationDate, string publisher) : IDTO<Book>
+public class BookDTO(
+    string isbn,
+    string title,
+    string author,
+    DateOnly publicationDate,
+    string publisher,
+    ICollection<CategoryDTO> bookCategories) : IDTO<Book>
 {
-    public BookDTO(Book book) : this(book.ISBN, book.Title, book.Author, book.PublicationDate, book.Publisher)
+    public BookDTO(Book book) : this(book.ISBN, book.Title, book.Author, book.PublicationDate, book.Publisher,
+        book.BookCategories.Select(bc => new CategoryDTO(bc.Category)).ToList())
     {
     }
 
@@ -14,13 +21,25 @@ public class BookDTO(string isbn, string title, string author, DateOnly publicat
     public string Author { get; } = author;
     public DateOnly PublicationDate { get; } = publicationDate;
     public string Publisher { get; } = publisher;
+    public ICollection<CategoryDTO> BookCategories { get; } = bookCategories;
 
-    public Book ToEntity() => new()
+    public Book ToEntity()
     {
-        ISBN = ISBN,
-        Title = Title,
-        Author = Author,
-        PublicationDate = PublicationDate,
-        Publisher = Publisher
-    };
+        Book book = new()
+        {
+            ISBN = ISBN,
+            Title = Title,
+            Author = Author,
+            PublicationDate = PublicationDate,
+            Publisher = Publisher,
+            BookCategories = BookCategories.Select(c => new BookCategory
+            {
+                BookISBN = ISBN,
+                CategoryName = c.Name
+            }).ToList()
+        };
+        foreach (var bc in book.BookCategories)
+            bc.Book = book;
+        return book;
+    }
 }

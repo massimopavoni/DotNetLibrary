@@ -1,8 +1,8 @@
+using DotNetLibrary.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Models.Entities;
 
-namespace Models.Configurations;
+namespace DotNetLibrary.Models.Configurations;
 
 public class BookConfiguration : IEntityTypeConfiguration<Book>
 {

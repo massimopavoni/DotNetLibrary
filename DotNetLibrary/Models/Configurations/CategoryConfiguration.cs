@@ -1,8 +1,8 @@
+using DotNetLibrary.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Models.Entities;
 
-namespace Models.Configurations;
+namespace DotNetLibrary.Models.Configurations;
 
 public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 {
@@ -10,16 +10,12 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {
         builder.ToTable("Categories");
 
-        builder.HasKey(c => c.ID);
+        builder.HasKey(c => c.Name);
 
-        builder.Property(c => c.ID)
-            .ValueGeneratedOnAdd()
-            .IsRequired();
         builder.Property(c => c.Name)
-            .HasMaxLength(128)
+            .HasMaxLength(256)
             .IsRequired();
-
-        builder.HasIndex(c => c.Name)
-            .IsUnique();
+        builder.Property(c => c.Description)
+            .HasMaxLength(65535);
     }
 }

@@ -1,7 +1,7 @@
+using DotNetLibrary.Models.Entities;
 using Microsoft.EntityFrameworkCore;
-using Models.Entities;
 
-namespace Models;
+namespace DotNetLibrary.Models.Context;
 
 public class LibraryContext(DbContextOptions<LibraryContext> config) : DbContext(config)
 {
@@ -12,8 +12,9 @@ public class LibraryContext(DbContextOptions<LibraryContext> config) : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseMySQL("server=DotNetLibraryDB;database=Library;user=libraryuser;password=librarypassword",
-            builder => { builder.EnableRetryOnFailure(8, TimeSpan.FromSeconds(16), null); });
+        optionsBuilder.UseMySQL(builder =>
+            builder.EnableRetryOnFailure(8, TimeSpan.FromSeconds(16), null)
+        );
         base.OnConfiguring(optionsBuilder);
     }
 

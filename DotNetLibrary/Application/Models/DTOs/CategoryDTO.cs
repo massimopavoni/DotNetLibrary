@@ -1,20 +1,25 @@
-using Application.Abstractions;
-using Models.Entities;
+using DotNetLibrary.Application.Abstractions;
+using DotNetLibrary.Models.Entities;
 
-namespace Application.Models.DTOs;
+namespace DotNetLibrary.Application.Models.DTOs;
 
-public class CategoryDTO(string name) : IDTO<Category>
+public class CategoryDTO(string name, string description = "") : IDTO<Category>
 {
-    public CategoryDTO(Category category) : this(category.Name)
+    public CategoryDTO(CategoryDTO category) : this(category.Name, category.Description)
     {
     }
 
-    public long ID { get; }
-    public string Name { get; } = name;
-
-    public Category ToEntity() => new()
+    public CategoryDTO(Category category) : this(category.Name, category.Description)
     {
-        ID = ID,
-        Name = Name
-    };
+    }
+
+    public string Name { get; } = name;
+    public string Description { get; } = description;
+
+    public Category ToEntity() =>
+        new()
+        {
+            Name = Name,
+            Description = Description
+        };
 }

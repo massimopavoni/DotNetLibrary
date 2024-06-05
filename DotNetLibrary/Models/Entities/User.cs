@@ -1,10 +1,10 @@
-namespace Models.Entities;
+namespace DotNetLibrary.Models.Entities;
 
 public class User
 {
     public string EmailAddress { get; init; }
+    public string PasswordHash { get; init; }
+    public UserRole Role { get; init; }
     public string FirstName { get; init; }
     public string LastName { get; init; }
-    public string Password { get; init; }
-    public bool IsAdmin { get; init; }
 }

@@ -1,4 +1,4 @@
-namespace Application.Abstractions;
+namespace DotNetLibrary.Application.Abstractions;
 
 public interface IDTO<out T> where T : class
 {
