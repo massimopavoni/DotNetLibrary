@@ -1,18 +1,21 @@
-using Models.Entities;
+using DotNetLibrary.Models.Context;
+using DotNetLibrary.Models.Entities;
 
-namespace Models.Repositories;
+namespace DotNetLibrary.Models.Repositories;
 
 public class BookRepository(LibraryContext context) : GenericRepository<Book, string>(context)
 {
-    public Book? Get(string isbn) => Read(isbn);
+    public Book? Get(string isbn) =>
+        Read(isbn);
 
-    public List<Book> Get(int from, int num, out int total,
-        string title = "", string author = "",
-        DateOnly publicationDate = default, string publisher = "", List<Category>? categories = null,
-        Func<Book, object>? ordering = null)
+    public ICollection<Book> Get(int from, int num, out int total, Func<Book, object> ordering,
+        string isbn = "", string title = "", string author = "",
+        DateOnly publicationDate = default, string publisher = "", ICollection<string>? categoryNames = null)
     {
-        var books = _context.Books.AsQueryable();
+        var books = Context.Books.AsQueryable();
         total = books.Count();
+        if (!string.IsNullOrWhiteSpace(isbn))
+            books = books.Where(b => b.ISBN.Contains(isbn));
         if (!string.IsNullOrWhiteSpace(title))
             books = books.Where(b => b.Title.Contains(title));
         if (!string.IsNullOrWhiteSpace(author))
@@ -21,14 +24,11 @@ public class BookRepository(LibraryContext context) : GenericRepository<Book, st
             books = books.Where(b => b.PublicationDate == publicationDate);
         if (!string.IsNullOrWhiteSpace(publisher))
             books = books.Where(b => b.Publisher.Contains(publisher));
-        if (categories is { Count: > 0 })
-        {
-            var categoryIDs = categories.Select(c => c.ID).ToList();
-            books = books.Where(b => b.Categories.Any(c => categoryIDs.Contains(c.CategoryID)));
-        }
+        if (categoryNames is { Count: > 0 })
+            books = books.Where(b => b.BookCategories.Any(bc => categoryNames.Contains(bc.CategoryName)));
 
         return books.AsEnumerable()
-            .OrderBy(ordering ?? (b => b.Title))
+            .OrderBy(ordering)
             .Skip(from)
             .Take(num)
             .ToList();

@@ -1,24 +1,36 @@
+using DotNetLibrary.Models.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
-namespace Models.Repositories;
+namespace DotNetLibrary.Models.Repositories;
 
 public abstract class GenericRepository<T, K>(LibraryContext context)
     where T : class
 {
-    protected LibraryContext _context = context;
+    protected readonly LibraryContext Context = context;
 
-    public virtual void Create(T entity) => _context.Add(entity);
+    public virtual void Create(T entity) =>
+        Context.Add(entity);
 
-    public virtual T? Read(K id) => _context.Set<T>().Find(id);
+    public virtual T? Read(K id) =>
+        Context.Set<T>().Find(id);
 
-    public virtual void Update(T entity) => _context.Entry(entity).State = EntityState.Modified;
+    public virtual void Update(T entity) =>
+        Context.Entry(entity).State = EntityState.Modified;
 
     public virtual void Delete(K id)
     {
         var entity = Read(id);
         if (entity != null)
-            _context.Entry(entity).State = EntityState.Deleted;
+            Context.Entry(entity).State = EntityState.Deleted;
     }
 
-    public void Save() => _context.SaveChanges();
+    public virtual bool Exists(K id) =>
+        Read(id) != null;
+
+    public IDbContextTransaction BeginTransaction() =>
+        Context.Database.BeginTransaction();
+
+    public void SaveChanges() =>
+        Context.SaveChanges();
 }
