@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DotNetLibrary.Models.Extensions;
 
-public static class ServiceExtension
+public static class ServiceExtensions
 {
     public static IServiceCollection AddModelServices(this IServiceCollection services, IConfiguration configuration)
     {

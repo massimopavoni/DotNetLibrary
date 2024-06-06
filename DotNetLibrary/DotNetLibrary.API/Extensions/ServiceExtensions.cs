@@ -9,7 +9,7 @@ using Microsoft.OpenApi.Models;
 
 namespace DotNetLibrary.API.Extensions;
 
-public static class ServiceExtension
+public static class ServiceExtensions
 {
     public static IServiceCollection AddWebServices(this IServiceCollection services)
     {
