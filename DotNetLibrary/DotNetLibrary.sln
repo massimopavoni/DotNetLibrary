@@ -10,6 +10,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
 		init.sql = init.sql
+		compose-up = compose-up
+		compose-down = compose-down
+		compose-up.bat = compose-up.bat
+		compose-down.bat = compose-down.bat
 	EndProjectSection
 EndProject
 Global

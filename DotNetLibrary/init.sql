@@ -3,95 +3,105 @@
 -- Model: New Model    Version: 1.0
 -- MySQL Workbench Forward Engineering
 
-SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+SET @OLD_UNIQUE_CHECKS = @@UNIQUE_CHECKS, UNIQUE_CHECKS = 0;
+SET @OLD_FOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0;
+SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE =
+        'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
 -- Schema Library
 -- -----------------------------------------------------
-DROP SCHEMA IF EXISTS `Library` ;
+DROP SCHEMA IF EXISTS `Library`;
 
 -- -----------------------------------------------------
 -- Schema Library
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `Library` ;
-USE `Library` ;
+CREATE SCHEMA IF NOT EXISTS `Library`;
+USE `Library`;
 
 -- -----------------------------------------------------
 -- Table `Library`.`Users`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Library`.`Users` ;
+DROP TABLE IF EXISTS `Library`.`Users`;
 
-CREATE TABLE IF NOT EXISTS `Library`.`Users` (
-  `EmailAddress` VARCHAR(256) NOT NULL,
-  `PasswordHash` CHAR(60) NOT NULL,
-  `Role` BIT(2) NOT NULL DEFAULT 0,
-  `FirstName` VARCHAR(256) NULL,
-  `LastName` VARCHAR(256) NULL,
-  PRIMARY KEY (`EmailAddress`),
-  UNIQUE INDEX `emailAddress_UNIQUE` (`EmailAddress` ASC) VISIBLE)
-ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `Library`.`Users`
+(
+    `EmailAddress` VARCHAR(256) NOT NULL,
+    `PasswordHash` CHAR(60)     NOT NULL,
+    `Role`         BIT(2)       NOT NULL DEFAULT 0,
+    `FirstName`    VARCHAR(256) NULL,
+    `LastName`     VARCHAR(256) NULL,
+    PRIMARY KEY (`EmailAddress`),
+    UNIQUE INDEX `emailAddress_UNIQUE` (`EmailAddress` ASC) VISIBLE
+)
+    ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
 -- Table `Library`.`Books`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Library`.`Books` ;
+DROP TABLE IF EXISTS `Library`.`Books`;
 
-CREATE TABLE IF NOT EXISTS `Library`.`Books` (
-  `ISBN` CHAR(17) NOT NULL,
-  `Title` TEXT NOT NULL,
-  `Author` VARCHAR(512) NOT NULL,
-  `PublicationDate` DATE NOT NULL,
-  `Publisher` VARCHAR(512) NOT NULL,
-  PRIMARY KEY (`ISBN`),
-  UNIQUE INDEX `ISBN_UNIQUE` (`ISBN` ASC) VISIBLE)
-ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `Library`.`Books`
+(
+    `ISBN`            CHAR(17)     NOT NULL,
+    `Title`           TEXT         NOT NULL,
+    `Author`          VARCHAR(512) NOT NULL,
+    `PublicationDate` DATE         NOT NULL,
+    `Publisher`       VARCHAR(512) NOT NULL,
+    PRIMARY KEY (`ISBN`),
+    UNIQUE INDEX `ISBN_UNIQUE` (`ISBN` ASC) VISIBLE
+)
+    ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
 -- Table `Library`.`Categories`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Library`.`Categories` ;
+DROP TABLE IF EXISTS `Library`.`Categories`;
 
-CREATE TABLE IF NOT EXISTS `Library`.`Categories` (
-  `Name` VARCHAR(256) NOT NULL,
-  `Description` TEXT NULL,
-  PRIMARY KEY (`Name`),
-  UNIQUE INDEX `Name_UNIQUE` (`Name` ASC) VISIBLE)
-ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `Library`.`Categories`
+(
+    `Name`        VARCHAR(256) NOT NULL,
+    `Description` TEXT         NULL,
+    PRIMARY KEY (`Name`),
+    UNIQUE INDEX `Name_UNIQUE` (`Name` ASC) VISIBLE
+)
+    ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
 -- Table `Library`.`BookCategories`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Library`.`BookCategories` ;
+DROP TABLE IF EXISTS `Library`.`BookCategories`;
 
-CREATE TABLE IF NOT EXISTS `Library`.`BookCategories` (
-  `BookISBN` VARCHAR(17) NOT NULL,
-  `CategoryName` VARCHAR(256) NOT NULL,
-  PRIMARY KEY (`BookISBN`, `CategoryName`),
-  INDEX `fk_BookCategories_Category_idx` (`CategoryName` ASC) VISIBLE,
-  CONSTRAINT `fk_BookCategories_Book`
-    FOREIGN KEY (`BookISBN`)
-    REFERENCES `Library`.`Books` (`ISBN`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_BookCategories_Category`
-    FOREIGN KEY (`CategoryName`)
-    REFERENCES `Library`.`Categories` (`Name`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `Library`.`BookCategories`
+(
+    `BookISBN`     VARCHAR(17)  NOT NULL,
+    `CategoryName` VARCHAR(256) NOT NULL,
+    PRIMARY KEY (`BookISBN`, `CategoryName`),
+    INDEX `fk_BookCategories_Category_idx` (`CategoryName` ASC) VISIBLE,
+    CONSTRAINT `fk_BookCategories_Book`
+        FOREIGN KEY (`BookISBN`)
+            REFERENCES `Library`.`Books` (`ISBN`)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE,
+    CONSTRAINT `fk_BookCategories_Category`
+        FOREIGN KEY (`CategoryName`)
+            REFERENCES `Library`.`Categories` (`Name`)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE
+)
+    ENGINE = InnoDB;
 
 SET SQL_MODE = '';
 DROP USER IF EXISTS LibraryDBUser;
-SET SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+SET SQL_MODE =
+        'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 CREATE USER 'LibraryDBUser' IDENTIFIED BY 'LibraryDBPassword';
 
 GRANT SELECT, INSERT, TRIGGER, UPDATE, DELETE ON TABLE `Library`.* TO 'LibraryDBUser';
 
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+SET SQL_MODE = @OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS;

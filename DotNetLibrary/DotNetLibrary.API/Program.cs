@@ -1,6 +1,6 @@
-﻿using DotNetLibrary.Application.Extensions;
+﻿using DotNetLibrary.API.Extensions;
+using DotNetLibrary.Application.Extensions;
 using DotNetLibrary.Models.Extensions;
-using DotNetLibrary.API.Extensions;
 using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,5 +11,5 @@ builder.Services
     .AddModelServices(builder.Configuration)
     .AddApplicationServices();
 var app = builder.Build();
-app.AddWebMiddleware();
-app.Run();
+app.AddWebMiddleware()
+    .Run();

@@ -1,6 +1,6 @@
 using System.Text;
-using DotNetLibrary.Application.Options;
 using DotNetLibrary.API.Results;
+using DotNetLibrary.Application.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,20 +1,22 @@
 ﻿services:
   api:
-    image: dotnetlibraryapi
     container_name: DotNetLibraryAPI
     build:
       context: .
-      dockerfile: Web/Dockerfile
+      dockerfile: DotNetLibrary.API/Dockerfile
+    ports:
+      - "50667:5000"
+        
   database:
-    image: mysql
     container_name: DotNetLibraryDB
+    image: mysql
     environment:
       MYSQL_ROOT_PASSWORD: W8I626YV1LpcvF2tx5nj15U2s1psA2jn
     volumes:
       - dotnetlibrary_db_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "3306:3306"
+      - "50666:3306"
 
 volumes:
   dotnetlibrary_db_data:
