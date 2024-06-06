@@ -15,8 +15,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Application\Application.csproj"/>
-        <ProjectReference Include="..\Models\Models.csproj"/>
+        <ProjectReference Include="..\DotNetLibrary.Application\DotNetLibrary.Application.csproj" />
+        <ProjectReference Include="..\DotNetLibrary.Models\DotNetLibrary.Models.csproj" />
     </ItemGroup>
 
     <ItemGroup>

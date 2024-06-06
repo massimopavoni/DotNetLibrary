@@ -1,7 +1,7 @@
 using DotNetLibrary.Application.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DotNetLibrary.Web.Results;
+namespace DotNetLibrary.API.Results;
 
 public class BadRequestResultFactory : BadRequestObjectResult
 {

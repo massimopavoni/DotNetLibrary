@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 
-namespace DotNetLibrary.Web.Extensions;
+namespace DotNetLibrary.API.Extensions;
 
 public static class MiddlewareExtensions
 {

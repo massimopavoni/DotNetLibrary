@@ -1,14 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{F459B4DF-CC7F-4665-9435-6473357979C0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetLibrary.Models", "DotNetLibrary.Models\DotNetLibrary.Models.csproj", "{F459B4DF-CC7F-4665-9435-6473357979C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{D2DF27C3-D787-44F9-AEA4-2EA04900B83F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetLibrary.Application", "DotNetLibrary.Application\DotNetLibrary.Application.csproj", "{D2DF27C3-D787-44F9-AEA4-2EA04900B83F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{7AB2B4F2-3AAD-4A89-BBD4-5071C5E66913}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetLibrary.API", "DotNetLibrary.API\DotNetLibrary.API.csproj", "{7AB2B4F2-3AAD-4A89-BBD4-5071C5E66913}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B0BC3990-330D-4051-AF95-C1E54C34E46E}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
+		init.sql = init.sql
 	EndProjectSection
 EndProject
 Global

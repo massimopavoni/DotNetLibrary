@@ -1,6 +1,6 @@
 ﻿using DotNetLibrary.Application.Extensions;
 using DotNetLibrary.Models.Extensions;
-using DotNetLibrary.Web.Extensions;
+using DotNetLibrary.API.Extensions;
 using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);

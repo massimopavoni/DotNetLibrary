@@ -1,13 +1,13 @@
 using System.Text;
 using DotNetLibrary.Application.Options;
-using DotNetLibrary.Web.Results;
+using DotNetLibrary.API.Results;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
-namespace DotNetLibrary.Web.Extensions;
+namespace DotNetLibrary.API.Extensions;
 
 public static class ServiceExtension
 {
