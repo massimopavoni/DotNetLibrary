@@ -18,4 +18,5 @@ RUN dotnet publish "DotNetLibrary.API.csproj" -c $BUILD_CONFIGURATION -o /app/pu
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY DotNetLibrary.API/appsettings.json .
 ENTRYPOINT ["dotnet", "DotNetLibrary.API.dll"]

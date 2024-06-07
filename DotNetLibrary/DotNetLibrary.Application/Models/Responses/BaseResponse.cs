@@ -2,13 +2,13 @@ using System.Text.Json.Serialization;
 
 namespace DotNetLibrary.Application.Models.Responses;
 
-public class BaseResponse<T>
+public class BaseResponse<T>(bool success, ICollection<string>? errors = null, T? result = default)
 {
-    public bool Success { get; set; }
+    public bool Success { get; } = success;
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public List<string>? Errors { get; set; } = null;
+    public ICollection<string>? Errors { get; } = errors;
 
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public T? Result { get; set; } = default;
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public T? Result { get; } = result;
 }

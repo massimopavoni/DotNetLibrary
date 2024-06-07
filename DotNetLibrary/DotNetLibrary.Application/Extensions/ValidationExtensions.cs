@@ -5,7 +5,7 @@ namespace DotNetLibrary.Application.Extensions;
 
 public static class ValidationExtensions
 {
-    private const string PasswordRegex = @"(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* )$";
+    private const string PasswordRegex = @"^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).*$";
     private static readonly (int, int) PasswordBounds = (8, 256);
 
     public static IRuleBuilderOptions<T, TProperty> RequiredNonEmpty<T, TProperty>

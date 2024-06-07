@@ -5,7 +5,7 @@
       context: .
       dockerfile: DotNetLibrary.API/Dockerfile
     ports:
-      - "50667:5000"
+      - "50667:8080"
   database:
     container_name: DotNetLibraryDB
     image: mysql

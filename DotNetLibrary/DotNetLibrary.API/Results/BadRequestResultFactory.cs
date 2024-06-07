@@ -3,13 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DotNetLibrary.API.Results;
 
-public class BadRequestResultFactory : BadRequestObjectResult
-{
-    public BadRequestResultFactory(ActionContext context) : base(new BadResponse())
-    {
-        var resultErrors = context.ModelState.Values.SelectMany(x =>
-            x.Errors.Select(e => e.ErrorMessage)).ToList();
-        var response = (BadResponse)Value!;
-        response.Errors = resultErrors;
-    }
-}
+public class BadRequestResultFactory(ActionContext context) :
+    BadRequestObjectResult(new BadResponse(context.ModelState
+        .Values.SelectMany(x =>
+            x.Errors.Select(e => e.ErrorMessage)).ToList()));

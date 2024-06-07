@@ -4,7 +4,7 @@ namespace DotNetLibrary.Application.Utils;
 
 public static class PasswordHashing
 {
-    private const int WorkFactor = 18;
+    private const int WorkFactor = 14;
     private const HashType HashType = BCrypt.Net.HashType.SHA384;
 
     public static string HashPassword(string password) =>

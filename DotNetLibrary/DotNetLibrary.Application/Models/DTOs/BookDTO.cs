@@ -32,11 +32,12 @@ public class BookDTO(
             Author = Author,
             PublicationDate = PublicationDate,
             Publisher = Publisher,
-            BookCategories = BookCategories.Select(c => new BookCategory
-            {
-                BookISBN = ISBN,
-                CategoryName = c.Name
-            }).ToList()
+            BookCategories = BookCategories.Select(c =>
+                new BookCategory
+                {
+                    BookISBN = ISBN,
+                    CategoryName = c.Name
+                }).ToList()
         };
         foreach (var bc in book.BookCategories)
             bc.Book = book;

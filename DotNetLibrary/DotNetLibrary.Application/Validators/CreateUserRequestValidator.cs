@@ -4,14 +4,15 @@ using FluentValidation;
 
 namespace DotNetLibrary.Application.Validators;
 
-public class CreateTokenRequestValidator : AbstractValidator<CreateTokenRequest>
+public class CreateUserRequestValidator : AbstractValidator<CreateUserRequest>
 {
-    public CreateTokenRequestValidator()
+    public CreateUserRequestValidator()
     {
         RuleFor(r => r.EmailAddress)
             .RequiredNonEmpty("Email address")
             .ValidEmailAddress();
         RuleFor(r => r.Password)
-            .RequiredNonEmpty("Password");
+            .RequiredNonEmpty("Password")
+            .ValidPassword();
     }
 }
