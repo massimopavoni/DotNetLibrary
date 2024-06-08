@@ -8,7 +8,7 @@ public class UserRepository(LibraryContext context) : GenericRepository<User, st
     public User? GetByEmailAddress(string emailAddress) =>
         Read(emailAddress);
 
-    public ICollection<User> Get(int from, int num, out int total, Func<User, object> ordering,
+    public ICollection<User> Get(int limit, int offset, out int total, Func<User, object> orderBy,
         string emailAddress = "", UserRole? role = null, string firstName = "", string lastName = "")
     {
         var users = Context.Users.AsQueryable();
@@ -23,9 +23,9 @@ public class UserRepository(LibraryContext context) : GenericRepository<User, st
             users = users.Where(u => u.LastName.Contains(lastName));
 
         return users.AsEnumerable()
-            .OrderBy(ordering)
-            .Skip(from)
-            .Take(num)
+            .OrderBy(orderBy)
+            .Skip(offset)
+            .Take(limit)
             .ToList();
     }
 }

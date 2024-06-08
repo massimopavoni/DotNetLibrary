@@ -9,12 +9,12 @@ public interface IUserService
 
     public UserDTO LogIn(string emailAddress, string password);
 
-    public UserDTO Get(UserRole requesterRole, string requesterEmailAddress, string emailAddress);
+    public UserDTO Get(string emailAddress);
 
-    public ICollection<UserDTO> Get(UserRole requesterRole, int from, int num, out int total, string ordering = "",
+    public ICollection<UserDTO> Get(int limit, int offset, out int total, string orderBy = "",
         string emailAddress = "", UserRole? role = null, string firstName = "", string lastName = "");
 
-    public UserDTO Put(UserRole requesterRole, string requesterEmailAddress, UserDTO user);
+    public UserDTO Patch(UserDTO newUser);
 
-    public void Delete(UserRole requesterRole, string requesterEmailAddress, string emailAddress);
+    public void Delete(string emailAddress);
 }

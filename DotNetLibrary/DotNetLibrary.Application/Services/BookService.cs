@@ -27,10 +27,10 @@ public class BookService(
         });
     }
 
-    public ICollection<BookDTO> Get(int from, int num, out int total, string ordering = "",
+    public ICollection<BookDTO> Get(int limit, int offset, out int total, string orderBy = "",
         string isbn = "", string title = "", string author = "", DateOnly publicationDate = default,
         string publisher = "", ICollection<string>? categoryNames = null) =>
-        bookRepository.Get(from, num, out total, ordering switch
+        bookRepository.Get(limit, offset, out total, orderBy switch
             {
                 "isbn" => b => b.ISBN,
                 "title" => b => b.Title,

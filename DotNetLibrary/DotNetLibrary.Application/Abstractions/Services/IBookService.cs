@@ -7,7 +7,7 @@ public interface IBookService
 {
     public BookDTO Post(UserRole requesterRole, BookDTO book);
 
-    public ICollection<BookDTO> Get(int from, int num, out int total, string ordering = "",
+    public ICollection<BookDTO> Get(int limit, int offset, out int total, string orderBy = "",
         string isbn = "", string title = "", string author = "", DateOnly publicationDate = default,
         string publisher = "", ICollection<string>? categoryNames = null);
 

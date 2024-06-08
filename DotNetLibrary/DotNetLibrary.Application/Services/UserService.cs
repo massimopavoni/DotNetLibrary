@@ -25,26 +25,21 @@ public class UserService(UserRepository repository)
         if (user == null)
             throw new NotFoundException($"User {emailAddress}");
         if (!PasswordHashing.VerifyPassword(password, user.PasswordHash))
-            throw new UnauthorizedException("Invalid password");
+            throw new UnauthorizedException("Wrong password");
         return new UserDTO(user);
     }
 
-    public UserDTO Get(UserRole requesterRole, string requesterEmailAddress, string emailAddress)
+    public UserDTO Get(string emailAddress)
     {
-        if (!requesterRole.IsLibraryStaff() && requesterEmailAddress != emailAddress)
-            throw new ForbiddenException(requesterRole, "get another user's info");
         var user = repository.GetByEmailAddress(emailAddress);
         if (user == null)
             throw new NotFoundException($"User {emailAddress}");
         return new UserDTO(user);
     }
 
-    public ICollection<UserDTO> Get(UserRole requesterRole, int from, int num, out int total, string ordering = "",
-        string emailAddress = "", UserRole? role = null, string firstName = "", string lastName = "")
-    {
-        if (!requesterRole.IsLibraryStaff())
-            throw new ForbiddenException(requesterRole, "get other users' info");
-        return repository.Get(from, num, out total, ordering switch
+    public ICollection<UserDTO> Get(int limit, int offset, out int total, string orderBy = "",
+        string emailAddress = "", UserRole? role = null, string firstName = "", string lastName = "") =>
+        repository.Get(limit, offset, out total, orderBy switch
             {
                 "emailAddress" => u => u.EmailAddress,
                 "role" => u => u.Role,
@@ -54,24 +49,25 @@ public class UserService(UserRepository repository)
             }, emailAddress, role, firstName, lastName)
             .Select(u => new UserDTO(u))
             .ToList();
-    }
 
-    public UserDTO Put(UserRole requesterRole, string requesterEmailAddress, UserDTO newUser)
+    public UserDTO Patch(UserDTO newUser)
     {
-        var user = repository.GetByEmailAddress(requesterEmailAddress);
+        var user = repository.GetByEmailAddress(newUser.EmailAddress);
         if (user == null)
-            throw new NotFoundException($"User {requesterEmailAddress}");
-        if (user.EmailAddress != newUser.EmailAddress)
-            throw new ForbiddenException(requesterRole, "change other users' info");
-        repository.Update(newUser.ToEntity());
+            throw new NotFoundException($"User {newUser.EmailAddress}");
+        if (!string.IsNullOrWhiteSpace(newUser.Password))
+            user.PasswordHash = PasswordHashing.HashPassword(newUser.Password);
+        if (newUser.FirstName != null)
+            user.FirstName = newUser.FirstName;
+        if (newUser.LastName != null)
+            user.LastName = newUser.LastName;
+        repository.Update(user);
         repository.SaveChanges();
         return new UserDTO(newUser);
     }
 
-    public void Delete(UserRole requesterRole, string requesterEmailAddress, string emailAddress)
+    public void Delete(string emailAddress)
     {
-        if (!requesterRole.IsAdmin() && requesterEmailAddress != emailAddress)
-            throw new ForbiddenException(requesterRole, "delete other users");
         if (!repository.Exists(emailAddress))
             throw new NotFoundException($"User {emailAddress}");
         repository.Delete(emailAddress);

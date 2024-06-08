@@ -1,3 +1,4 @@
+using DotNetLibrary.API.Extensions;
 using DotNetLibrary.Application.Abstractions.Services;
 using DotNetLibrary.Application.Exceptions;
 using DotNetLibrary.Application.Factories;
@@ -5,15 +6,17 @@ using DotNetLibrary.Application.Models.DTOs;
 using DotNetLibrary.Application.Models.Requests;
 using DotNetLibrary.Application.Models.Responses;
 using DotNetLibrary.Models.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DotNetLibrary.API.Controllers;
 
-[ApiController]
-[Route("api/v1/[controller]/[action]")]
-public class UserController(IUserService userService, ITokenService tokenService) : ControllerBase
+public class UserController(IUserService userService, ITokenService tokenService) : LibraryBaseController
 {
     [HttpPost]
+    [Route("signup")]
     public IActionResult SignUp(CreateUserRequest request)
     {
         var user = new UserDTO(request.EmailAddress, request.Password, UserRole.User,
@@ -21,7 +24,8 @@ public class UserController(IUserService userService, ITokenService tokenService
         try
         {
             user = userService.SignUp(user);
-            return Ok(ResponseFactory.WithSuccess(user));
+            return CreatedAtAction(nameof(Get), new { user.EmailAddress },
+                ResponseFactory.WithSuccess(user));
         }
         catch (BadRequestException e)
         {
@@ -30,6 +34,7 @@ public class UserController(IUserService userService, ITokenService tokenService
     }
 
     [HttpPost]
+    [Route("login")]
     public IActionResult LogIn(CreateTokenRequest request)
     {
         try
@@ -46,6 +51,85 @@ public class UserController(IUserService userService, ITokenService tokenService
         {
             return Unauthorized(ResponseFactory.WithError(e,
                 new UserDTO(request.EmailAddress, "", UserRole.User)));
+        }
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpGet("{emailAddress}")]
+    public IActionResult Get(string emailAddress)
+    {
+        var userRole = User.UserRole();
+        if (!userRole.IsLibraryStaff() && User.EmailAddress() != emailAddress)
+            return Forbidden(ResponseFactory.WithJustError(
+                new ForbiddenException(userRole, "get another user's info")));
+        try
+        {
+            return Ok(ResponseFactory.WithSuccess(userService.Get(emailAddress)));
+        }
+        catch (NotFoundException e)
+        {
+            return NotFound(ResponseFactory.WithError(e,
+                new UserDTO(emailAddress, "", UserRole.User)));
+        }
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpGet]
+    public IActionResult Get([FromQuery] int limit, [FromQuery] int offset,
+        [FromQuery] string orderBy = "", [FromQuery] string emailAddress = "",
+        [FromQuery] string role = "", [FromQuery] string firstName = "", [FromQuery] string lastName = "")
+    {
+        var userRole = User.UserRole();
+        if (!userRole.IsLibraryStaff())
+            return Forbidden(ResponseFactory.WithJustError(
+                new ForbiddenException(userRole, "get other users' info")));
+        UserRole? filterRole =
+            string.IsNullOrWhiteSpace(role) || !Enum.TryParse<UserRole>(role, out var r)
+                ? null
+                : r;
+        var result = userService.Get(limit == default ? 10 : limit, offset, out var total,
+            orderBy, emailAddress, filterRole, firstName, lastName);
+        return Ok(ResponseFactory.WithSuccess(total, result));
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpPatch("{emailAddress}")]
+    public IActionResult Patch(string emailAddress, ModifyUserRequest request)
+    {
+        var userRole = User.UserRole();
+        if (User.EmailAddress() != emailAddress)
+            return Forbidden(ResponseFactory.WithJustError(
+                new ForbiddenException(userRole, "change other users' info")));
+        try
+        {
+            return Ok(ResponseFactory.WithSuccess(userService.Patch(
+                new UserDTO(emailAddress, request.Password ?? "", UserRole.User,
+                    request.FirstName, request.LastName))));
+        }
+        catch (NotFoundException e)
+        {
+            return NotFound(ResponseFactory.WithError(e,
+                new UserDTO(emailAddress, "", UserRole.User)));
+        }
+    }
+    
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpDelete("{emailAddress}")]
+    public IActionResult Delete(string emailAddress)
+    {
+        var userRole = User.UserRole();
+        if (!userRole.IsAdmin() && User.EmailAddress() != emailAddress)
+            return Forbidden(ResponseFactory.WithJustError(
+                new ForbiddenException(userRole, "delete other users")));
+        try
+        {
+            userService.Delete(emailAddress);
+            return NoContent();
+        }
+        catch (NotFoundException e)
+        {
+            return NotFound(ResponseFactory.WithError(e,
+                new UserDTO(emailAddress, "", UserRole.User)));
         }
     }
 }

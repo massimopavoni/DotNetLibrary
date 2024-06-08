@@ -8,7 +8,7 @@ public class BookRepository(LibraryContext context) : GenericRepository<Book, st
     public Book? Get(string isbn) =>
         Read(isbn);
 
-    public ICollection<Book> Get(int from, int num, out int total, Func<Book, object> ordering,
+    public ICollection<Book> Get(int limit, int offset, out int total, Func<Book, object> orderBy,
         string isbn = "", string title = "", string author = "",
         DateOnly publicationDate = default, string publisher = "", ICollection<string>? categoryNames = null)
     {
@@ -28,9 +28,9 @@ public class BookRepository(LibraryContext context) : GenericRepository<Book, st
             books = books.Where(b => b.BookCategories.Any(bc => categoryNames.Contains(bc.CategoryName)));
 
         return books.AsEnumerable()
-            .OrderBy(ordering)
-            .Skip(from)
-            .Take(num)
+            .OrderBy(orderBy)
+            .Skip(offset)
+            .Take(limit)
             .ToList();
     }
 }

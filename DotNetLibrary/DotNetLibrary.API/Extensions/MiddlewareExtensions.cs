@@ -22,7 +22,7 @@ public static class MiddlewareExtensions
                 context.Response.ContentType = "application/json";
                 var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
                 if (contextFeature != null)
-                    await context.Response.WriteAsJsonAsync(ResponseFactory.WithError(contextFeature.Error));
+                    await context.Response.WriteAsJsonAsync(ResponseFactory.WithJustError(contextFeature.Error));
             })
         );
         app.MapControllers();

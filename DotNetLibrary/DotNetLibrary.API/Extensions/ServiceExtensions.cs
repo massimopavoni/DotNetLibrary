@@ -80,7 +80,8 @@ public static class ServiceExtensions
                     ValidateAudience = false,
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = jwtAuthOption.Issuer,
-                    IssuerSigningKey = securityKey
+                    IssuerSigningKey = securityKey,
+                    NameClaimType = "EmailAddress"
                 };
             });
         services.Configure<JwtAuthenticationOption>(configuration.GetSection("JwtAuthentication"));

@@ -20,9 +20,9 @@ public class CategoryService(CategoryRepository categoryRepository, BookCategory
         return new CategoryDTO(category);
     }
 
-    public ICollection<CategoryDTO> Get(int from, int num, out int total, string ordering = "",
+    public ICollection<CategoryDTO> Get(int limit, int offset, out int total, string orderBy = "",
         string name = "", string description = "", ICollection<string>? bookISBNs = null) =>
-        categoryRepository.Get(from, num, out total, ordering switch
+        categoryRepository.Get(limit, offset, out total, orderBy switch
             {
                 "name" => c => c.Name,
                 "description" => c => c.Description,
