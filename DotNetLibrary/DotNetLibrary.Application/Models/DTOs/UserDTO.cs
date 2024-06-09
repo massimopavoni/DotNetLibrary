@@ -22,8 +22,9 @@ public class UserDTO(
     }
 
     public string EmailAddress { get; } = emailAddress;
-    [JsonIgnore]
-    public string Password { get; } = password;
+
+    [JsonIgnore] public string Password { get; } = password;
+
     public UserRole Role { get; } = role;
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

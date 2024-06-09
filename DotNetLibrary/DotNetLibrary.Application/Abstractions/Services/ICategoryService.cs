@@ -1,16 +1,17 @@
 using DotNetLibrary.Application.Models.DTOs;
-using DotNetLibrary.Models.Entities;
 
 namespace DotNetLibrary.Application.Abstractions.Services;
 
 public interface ICategoryService
 {
-    public CategoryDTO Post(UserRole requesterRole, CategoryDTO category);
+    public CategoryDTO Post(CategoryDTO category);
+
+    public CategoryDTO Get(string name);
 
     public ICollection<CategoryDTO> Get(int limit, int offset, out int total, string orderBy = "",
         string name = "", string description = "", ICollection<string>? bookISBNs = null);
 
-    public CategoryDTO Put(UserRole requesterRole, CategoryDTO category);
+    public CategoryDTO Patch(CategoryDTO newCategory);
 
-    public void Delete(UserRole requesterRole, string name);
+    public void Delete(string name);
 }

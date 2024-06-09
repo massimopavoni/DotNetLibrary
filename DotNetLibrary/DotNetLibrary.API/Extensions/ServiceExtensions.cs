@@ -57,6 +57,19 @@ public static class ServiceExtensions
                     Array.Empty<string>()
                 }
             });
+            c.OrderActionsBy(apiDesc =>
+            {
+                var order = apiDesc.HttpMethod switch
+                {
+                    "POST" => 1,
+                    "GET" => 2,
+                    "PATCH" => 3,
+                    "PUT" => 4,
+                    "DELETE" => 5,
+                    _ => 0
+                };
+                return new string($"{order}:{apiDesc.RelativePath}");
+            });
         });
 
     public static IServiceCollection AddSecurityServices(this IServiceCollection services, IConfiguration configuration)

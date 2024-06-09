@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace DotNetLibrary.API.Controllers;
 
-
 [ApiController]
 [Route("api/v1/[controller]")]
 public class LibraryBaseController : ControllerBase

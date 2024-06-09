@@ -9,7 +9,7 @@ public static class ResponseFactory
 
     public static BaseResponse<T> WithSuccess<T>(int count, T result) =>
         new(true, count: count, result: result);
-    
+
     public static BaseResponse<object> WithJustError(Exception exception) =>
         new(false, new List<string> { exception.Message });
 

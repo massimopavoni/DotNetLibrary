@@ -8,12 +8,11 @@ using DotNetLibrary.Application.Models.Responses;
 using DotNetLibrary.Models.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DotNetLibrary.API.Controllers;
 
-public class UserController(IUserService userService, ITokenService tokenService) : LibraryBaseController
+public class UsersController(IUserService userService, ITokenService tokenService) : LibraryBaseController
 {
     [HttpPost]
     [Route("signup")]
@@ -29,7 +28,8 @@ public class UserController(IUserService userService, ITokenService tokenService
         }
         catch (BadRequestException e)
         {
-            return BadRequest(ResponseFactory.WithError(e, new UserDTO(user)));
+            return BadRequest(ResponseFactory.WithError(e,
+                new UserDTO(user)));
         }
     }
 
@@ -61,7 +61,7 @@ public class UserController(IUserService userService, ITokenService tokenService
         var userRole = User.UserRole();
         if (!userRole.IsLibraryStaff() && User.EmailAddress() != emailAddress)
             return Forbidden(ResponseFactory.WithJustError(
-                new ForbiddenException(userRole, "get another user's info")));
+                new ForbiddenException(userRole, "read another user's info")));
         try
         {
             return Ok(ResponseFactory.WithSuccess(userService.Get(emailAddress)));
@@ -75,20 +75,20 @@ public class UserController(IUserService userService, ITokenService tokenService
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet]
-    public IActionResult Get([FromQuery] int limit, [FromQuery] int offset,
-        [FromQuery] string orderBy = "", [FromQuery] string emailAddress = "",
-        [FromQuery] string role = "", [FromQuery] string firstName = "", [FromQuery] string lastName = "")
+    public IActionResult Get([FromQuery] int limit, [FromQuery] int offset, [FromQuery] string orderBy = "",
+        [FromQuery] string emailAddress = "", [FromQuery] string role = "",
+        [FromQuery] string firstName = "", [FromQuery] string lastName = "")
     {
         var userRole = User.UserRole();
         if (!userRole.IsLibraryStaff())
             return Forbidden(ResponseFactory.WithJustError(
-                new ForbiddenException(userRole, "get other users' info")));
-        UserRole? filterRole =
+                new ForbiddenException(userRole, "read other users' info")));
+        UserRole? roleFilter =
             string.IsNullOrWhiteSpace(role) || !Enum.TryParse<UserRole>(role, out var r)
                 ? null
                 : r;
         var result = userService.Get(limit == default ? 10 : limit, offset, out var total,
-            orderBy, emailAddress, filterRole, firstName, lastName);
+            orderBy, emailAddress, roleFilter, firstName, lastName);
         return Ok(ResponseFactory.WithSuccess(total, result));
     }
 
@@ -99,7 +99,7 @@ public class UserController(IUserService userService, ITokenService tokenService
         var userRole = User.UserRole();
         if (User.EmailAddress() != emailAddress)
             return Forbidden(ResponseFactory.WithJustError(
-                new ForbiddenException(userRole, "change other users' info")));
+                new ForbiddenException(userRole, "update other users' info")));
         try
         {
             return Ok(ResponseFactory.WithSuccess(userService.Patch(
@@ -112,7 +112,7 @@ public class UserController(IUserService userService, ITokenService tokenService
                 new UserDTO(emailAddress, "", UserRole.User)));
         }
     }
-    
+
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpDelete("{emailAddress}")]
     public IActionResult Delete(string emailAddress)

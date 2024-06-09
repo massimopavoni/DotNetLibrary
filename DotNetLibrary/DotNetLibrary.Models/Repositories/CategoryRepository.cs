@@ -5,6 +5,9 @@ namespace DotNetLibrary.Models.Repositories;
 
 public class CategoryRepository(LibraryContext context) : GenericRepository<Category, string>(context)
 {
+    public Category? GetByName(string name) =>
+        Read(name);
+
     public ICollection<Category> Get() =>
         Context.Categories.ToList();
 

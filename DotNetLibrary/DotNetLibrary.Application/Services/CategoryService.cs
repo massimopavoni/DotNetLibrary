@@ -1,7 +1,6 @@
 using DotNetLibrary.Application.Abstractions.Services;
 using DotNetLibrary.Application.Exceptions;
 using DotNetLibrary.Application.Models.DTOs;
-using DotNetLibrary.Models.Entities;
 using DotNetLibrary.Models.Repositories;
 
 namespace DotNetLibrary.Application.Services;
@@ -9,14 +8,20 @@ namespace DotNetLibrary.Application.Services;
 public class CategoryService(CategoryRepository categoryRepository, BookCategoryRepository bookCategoryRepository)
     : ICategoryService
 {
-    public CategoryDTO Post(UserRole requesterRole, CategoryDTO category)
+    public CategoryDTO Post(CategoryDTO category)
     {
-        if (!requesterRole.IsLibraryStaff())
-            throw new ForbiddenException(requesterRole, "add categories");
         if (categoryRepository.Exists(category.Name))
             throw new BadRequestException($"Category {category.Name} already exists");
         categoryRepository.Create(category.ToEntity());
         categoryRepository.SaveChanges();
+        return new CategoryDTO(category);
+    }
+
+    public CategoryDTO Get(string name)
+    {
+        var category = categoryRepository.GetByName(name);
+        if (category == null)
+            throw new NotFoundException($"Category {name}");
         return new CategoryDTO(category);
     }
 
@@ -31,24 +36,23 @@ public class CategoryService(CategoryRepository categoryRepository, BookCategory
             .Select(c => new CategoryDTO(c))
             .ToList();
 
-    public CategoryDTO Put(UserRole requesterRole, CategoryDTO category)
+    public CategoryDTO Patch(CategoryDTO newCategory)
     {
-        if (!requesterRole.IsLibraryStaff())
-            throw new ForbiddenException(requesterRole, "modify categories");
-        if (!categoryRepository.Exists(category.Name))
-            throw new NotFoundException($"Category {category.Name}");
-        categoryRepository.Update(category.ToEntity());
+        var category = categoryRepository.GetByName(newCategory.Name);
+        if (category == null)
+            throw new NotFoundException($"Category {newCategory.Name}");
+        if (newCategory.Description != null)
+            category.Description = newCategory.Description;
+        categoryRepository.Update(category);
         categoryRepository.SaveChanges();
-        return new CategoryDTO(category);
+        return new CategoryDTO(newCategory);
     }
 
-    public void Delete(UserRole requesterRole, string name)
+    public void Delete(string name)
     {
-        if (!requesterRole.IsLibraryStaff())
-            throw new ForbiddenException(requesterRole, "delete categories");
         if (!categoryRepository.Exists(name))
             throw new NotFoundException($"Category {name}");
-        if (bookCategoryRepository.GetByCategory(name).Any())
+        if (bookCategoryRepository.GetByCategory(name).Count != 0)
             throw new BadRequestException($"Category {name} is used by books");
         categoryRepository.Delete(name);
         categoryRepository.SaveChanges();
