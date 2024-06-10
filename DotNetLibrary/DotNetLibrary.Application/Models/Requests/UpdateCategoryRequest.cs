@@ -1,6 +1,6 @@
 namespace DotNetLibrary.Application.Models.Requests;
 
-public class ModifyCategoryRequest(
+public class UpdateCategoryRequest(
     string? description)
 {
     public string? Description { get; } = description;

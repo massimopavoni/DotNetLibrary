@@ -1,5 +1,6 @@
 using DotNetLibrary.Application.Extensions;
 using DotNetLibrary.Application.Models.Requests;
+using DotNetLibrary.Models.Configurations;
 using FluentValidation;
 
 namespace DotNetLibrary.Application.Validators;
@@ -8,10 +9,10 @@ public class CreateTokenRequestValidator : AbstractValidator<CreateTokenRequest>
 {
     public CreateTokenRequestValidator()
     {
-        RuleFor(r => r.EmailAddress)
-            .RequiredNonEmpty("Email address")
+        RuleFor(ctr => ctr.EmailAddress)
+            .RequiredNotEmptyString("Email address", UserConfiguration.EmailAddressMaxLength)
             .ValidEmailAddress();
-        RuleFor(r => r.Password)
-            .RequiredNonEmpty("Password");
+        RuleFor(ctr => ctr.Password)
+            .RequiredNotEmptyString("Password");
     }
 }

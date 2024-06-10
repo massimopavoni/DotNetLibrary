@@ -6,6 +6,6 @@ public class BookCategory
     public string BookISBN { get; init; }
     public string CategoryName { get; init; }
 
-    public Book? Book { get; set; }
-    public Category Category { get; init; }
+    public virtual Book Book { get; init; }
+    public virtual Category Category { get; init; }
 }

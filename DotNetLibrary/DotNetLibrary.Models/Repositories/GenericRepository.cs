@@ -28,6 +28,8 @@ public abstract class GenericRepository<T, K>(LibraryContext context)
     public virtual bool Exists(K id) =>
         Read(id) != null;
 
+    public IExecutionStrategy CreateExecutionStrategy() =>
+        Context.Database.CreateExecutionStrategy();
     public IDbContextTransaction BeginTransaction() =>
         Context.Database.BeginTransaction();
 

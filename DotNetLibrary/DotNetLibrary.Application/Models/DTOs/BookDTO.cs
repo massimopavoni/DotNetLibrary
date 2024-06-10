@@ -9,19 +9,25 @@ public class BookDTO(
     string author,
     DateOnly publicationDate,
     string publisher,
-    ICollection<CategoryDTO> bookCategories) : IDTO<Book>
+    ICollection<string> categoryNames) : IDTO<Book>
 {
-    public BookDTO(Book book) : this(book.ISBN, book.Title, book.Author, book.PublicationDate, book.Publisher,
-        book.BookCategories.Select(bc => new CategoryDTO(bc.Category)).ToList())
+    public BookDTO(BookDTO book) : this(book.ISBN, book.Title, book.Author,
+        book.PublicationDate, book.Publisher, book.CategoryNames)
     {
     }
 
-    public string ISBN { get; } = isbn;
+    public BookDTO(Book book) : this(book.ISBN, book.Title, book.Author,
+        DateOnly.FromDateTime(book.PublicationDate), book.Publisher,
+        book.BookCategories.Select(bc => bc.CategoryName).ToList())
+    {
+    }
+
+    public string ISBN { get; set; } = isbn;
     public string Title { get; } = title;
     public string Author { get; } = author;
     public DateOnly PublicationDate { get; } = publicationDate;
     public string Publisher { get; } = publisher;
-    public ICollection<CategoryDTO> BookCategories { get; } = bookCategories;
+    public ICollection<string> CategoryNames { get; } = categoryNames;
 
     public Book ToEntity()
     {
@@ -30,17 +36,15 @@ public class BookDTO(
             ISBN = ISBN,
             Title = Title,
             Author = Author,
-            PublicationDate = PublicationDate,
-            Publisher = Publisher,
-            BookCategories = BookCategories.Select(c =>
-                new BookCategory
-                {
-                    BookISBN = ISBN,
-                    CategoryName = c.Name
-                }).ToList()
+            PublicationDate = PublicationDate.ToDateTime(TimeOnly.MinValue),
+            Publisher = Publisher
+            // BookCategories = CategoryNames.Select(cn =>
+            //     new BookCategory
+            //     {
+            //         BookISBN = ISBN,
+            //         CategoryName = cn
+            //     }).ToList()
         };
-        foreach (var bc in book.BookCategories)
-            bc.Book = book;
         return book;
     }
 }

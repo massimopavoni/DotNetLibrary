@@ -1,5 +1,6 @@
 using DotNetLibrary.Application.Abstractions.Services;
 using DotNetLibrary.Application.Exceptions;
+using DotNetLibrary.Application.Extensions;
 using DotNetLibrary.Application.Models.DTOs;
 using DotNetLibrary.Models.Repositories;
 
@@ -32,7 +33,10 @@ public class CategoryService(CategoryRepository categoryRepository, BookCategory
                 "name" => c => c.Name,
                 "description" => c => c.Description,
                 _ => c => c.Name
-            }, name, description, bookISBNs)
+            }, name, description, bookISBNs
+                .Select(bi => ISBN.TryParse(bi, out var isbnObj)
+                    ? isbnObj.ToDashedString()
+                    : bi).ToList())
             .Select(c => new CategoryDTO(c))
             .ToList();
 
@@ -53,7 +57,7 @@ public class CategoryService(CategoryRepository categoryRepository, BookCategory
         if (!categoryRepository.Exists(name))
             throw new NotFoundException($"Category {name}");
         if (bookCategoryRepository.GetByCategory(name).Count != 0)
-            throw new BadRequestException($"Category {name} is used by books");
+            throw new BadRequestException($"Category {name} is used by some books");
         categoryRepository.Delete(name);
         categoryRepository.SaveChanges();
     }

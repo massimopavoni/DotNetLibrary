@@ -6,6 +6,14 @@ namespace DotNetLibrary.Models.Configurations;
 
 public class BookConfiguration : IEntityTypeConfiguration<Book>
 {
+    public const int ISBNMaxLength = 17;
+    public const int TitleMaxLength = 65535;
+    public const int AuthorMaxLength = 512;
+    public const int PublicationDateMaxFutureYears = 2;
+    public const int PublisherMaxLength = 512;
+    public const int MinCategories = 1;
+    public const int MaxCategories = 16;
+
     public void Configure(EntityTypeBuilder<Book> builder)
     {
         builder.ToTable("Books");

@@ -50,20 +50,19 @@ public class CategoriesController(ICategoryService categoryService) : LibraryBas
     }
 
     [HttpGet]
-    public IActionResult Get([FromQuery] int limit, [FromQuery] int offset,
-        [FromQuery] string orderBy = "", [FromQuery] string name = "", [FromQuery] string description = "",
-        [FromQuery] string bookISBNs = "")
+    public IActionResult Get([FromQuery] int limit, [FromQuery] int offset, [FromQuery] string orderBy = "",
+        [FromQuery] string name = "", [FromQuery] string description = "", [FromQuery] string bookISBNs = "")
     {
         ICollection<string> bookISBNsFilter = string.IsNullOrWhiteSpace(bookISBNs)
             ? []
             : bookISBNs.Split(',').ToList();
         var result = categoryService.Get(limit == default ? 10 : limit, offset, out var total,
             orderBy, name, description, bookISBNsFilter);
-        return Ok(ResponseFactory.WithSuccess(total, result));
+        return Ok(ResponseFactory.WithSuccess(total, offset, result));
     }
 
     [HttpPatch("{name}")]
-    public IActionResult Patch(string name, ModifyCategoryRequest request)
+    public IActionResult Patch(string name, UpdateCategoryRequest request)
     {
         var userRole = User.UserRole();
         if (!userRole.IsLibraryStaff())

@@ -40,7 +40,7 @@ public class UsersController(IUserService userService, ITokenService tokenServic
         try
         {
             return Ok(ResponseFactory.WithSuccess(
-                new CreateTokenResponse(tokenService.CreateToken(request))));
+                new CreateTokenResponse(tokenService.Post(request))));
         }
         catch (NotFoundException e)
         {
@@ -89,12 +89,12 @@ public class UsersController(IUserService userService, ITokenService tokenServic
                 : r;
         var result = userService.Get(limit == default ? 10 : limit, offset, out var total,
             orderBy, emailAddress, roleFilter, firstName, lastName);
-        return Ok(ResponseFactory.WithSuccess(total, result));
+        return Ok(ResponseFactory.WithSuccess(total, offset, result));
     }
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpPatch("{emailAddress}")]
-    public IActionResult Patch(string emailAddress, ModifyUserRequest request)
+    public IActionResult Patch(string emailAddress, UpdateUserRequest request)
     {
         var userRole = User.UserRole();
         if (User.EmailAddress() != emailAddress)

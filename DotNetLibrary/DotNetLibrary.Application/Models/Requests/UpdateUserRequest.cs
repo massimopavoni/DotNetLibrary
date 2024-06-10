@@ -1,6 +1,6 @@
 namespace DotNetLibrary.Application.Models.Requests;
 
-public class ModifyUserRequest(
+public class UpdateUserRequest(
     string? password,
     string? firstName,
     string? lastName)

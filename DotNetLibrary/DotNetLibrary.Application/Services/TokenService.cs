@@ -12,17 +12,16 @@ namespace DotNetLibrary.Application.Services;
 public class TokenService(IUserService userService, IOptions<JwtAuthenticationOption> jwtAuthOption)
     : ITokenService
 {
-    private const int MinutesToExpire = 60;
     private readonly JwtAuthenticationOption _jwtAuthOption = jwtAuthOption.Value;
 
-    public string CreateToken(CreateTokenRequest request)
+    public string Post(CreateTokenRequest request)
     {
         var user = userService.LogIn(request.EmailAddress, request.Password);
         return new JwtSecurityTokenHandler().WriteToken(
             new JwtSecurityToken(_jwtAuthOption.Issuer, null, [
                     new Claim("EmailAddress", user.EmailAddress),
                     new Claim("Role", user.Role.ToString())
-                ], expires: DateTime.Now.AddMinutes(MinutesToExpire),
+                ], expires: DateTime.Now.AddMinutes(ITokenService.MinutesToExpire),
                 signingCredentials: GetSigningCredentials()));
     }
 

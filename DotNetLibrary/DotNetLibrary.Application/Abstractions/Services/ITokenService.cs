@@ -4,5 +4,7 @@ namespace DotNetLibrary.Application.Abstractions.Services;
 
 public interface ITokenService
 {
-    public string CreateToken(CreateTokenRequest request);
+    protected const int MinutesToExpire = 30;
+
+    public string Post(CreateTokenRequest request);
 }

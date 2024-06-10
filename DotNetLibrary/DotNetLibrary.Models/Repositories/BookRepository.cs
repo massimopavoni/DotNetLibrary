@@ -1,19 +1,19 @@
 using DotNetLibrary.Models.Context;
 using DotNetLibrary.Models.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace DotNetLibrary.Models.Repositories;
 
 public class BookRepository(LibraryContext context) : GenericRepository<Book, string>(context)
 {
-    public Book? Get(string isbn) =>
-        Read(isbn);
+    public Book? GetByISBN(string isbn) =>
+        Context.Books.Include(b => b.BookCategories).FirstOrDefault(b => b.ISBN == isbn);
 
     public ICollection<Book> Get(int limit, int offset, out int total, Func<Book, object> orderBy,
         string isbn = "", string title = "", string author = "",
-        DateOnly publicationDate = default, string publisher = "", ICollection<string>? categoryNames = null)
+        DateTime publicationDate = default, string publisher = "", ICollection<string>? categoryNames = null)
     {
-        var books = Context.Books.AsQueryable();
-        total = books.Count();
+        var books = Context.Books.Include(b => b.BookCategories).AsQueryable();
         if (!string.IsNullOrWhiteSpace(isbn))
             books = books.Where(b => b.ISBN.Contains(isbn));
         if (!string.IsNullOrWhiteSpace(title))
@@ -26,6 +26,7 @@ public class BookRepository(LibraryContext context) : GenericRepository<Book, st
             books = books.Where(b => b.Publisher.Contains(publisher));
         if (categoryNames is { Count: > 0 })
             books = books.Where(b => b.BookCategories.Any(bc => categoryNames.Contains(bc.CategoryName)));
+        total = books.Count();
 
         return books.AsEnumerable()
             .OrderBy(orderBy)

@@ -15,13 +15,13 @@ public class CategoryRepository(LibraryContext context) : GenericRepository<Cate
         string name = "", string description = "", ICollection<string>? bookISBNs = null)
     {
         var categories = Context.Categories.AsQueryable();
-        total = categories.Count();
         if (!string.IsNullOrWhiteSpace(name))
             categories = categories.Where(c => c.Name.Contains(name));
         if (!string.IsNullOrWhiteSpace(description))
-            categories = categories.Where(c => c.Description.Contains(description));
+            categories = categories.Where(c => c.Description != null && c.Description.Contains(description));
         if (bookISBNs is { Count: > 0 })
             categories = categories.Where(c => c.CategoryBooks.Any(bc => bookISBNs.Contains(bc.BookISBN)));
+        total = categories.Count();
 
         return categories.AsEnumerable()
             .OrderBy(orderBy)
