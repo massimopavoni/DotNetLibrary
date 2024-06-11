@@ -13,8 +13,8 @@ The application models a very trivial use case for a library, while also providi
 The modeled library itself is very much simplified, it only having one many-to-many relationship between books and categories they belong to. The separation of authors and publishers from books was not required, and is left as a potential improvement to the project, as well as `https` support and some other minor details such as improved filtering and sorting.
 
 Since the project was developed on `ArchLinux`, deploying it is made simpler by containerization of the whole infrastructure.<br>
-To run the application, simply use `docker-compose -f docker-compose.yml up -d` from inside the [`DotNetLibrary`](DotNetLibrary) inner directory (where the [`.yml`](DotNetLibrary/docker-compose.yml) file is located).<br>
-The configured services will spin up the `MySQL` database and populate it using [`init.sql`](DotNetLibrary/init.sql) (exposing port `50666` for database connections), then build the [`DotNetLibrary.API`](DotNetLibrary/DotNetLibrary.API) [`Dockerfile`](DotNetLibrary/DotNetLibrary.API/Dockerfile) and run it (exposing port `50667` for the `Swagger` interface).
+To run the application, simply use `docker-compose -f docker-compose.yml up -d` from inside the [`DotNetLibrary`](DotNetLibrary/) inner directory (where the [`.yml`](DotNetLibrary/docker-compose.yml) file is located).<br>
+The configured services will spin up the `MySQL` database and populate it using [`init.sql`](DotNetLibrary/init.sql) (exposing port `50666` for database connections), then build the [`DotNetLibrary.API`](DotNetLibrary/DotNetLibrary.API/) [`Dockerfile`](DotNetLibrary/DotNetLibrary.API/Dockerfile) and run it (exposing port `50667` for the `Swagger` interface).
 
 Some scripts, both bash and powershell, are provided to:
 - start docker services;
