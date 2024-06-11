@@ -87,9 +87,25 @@ public class UsersController(IUserService userService, ITokenService tokenServic
             string.IsNullOrWhiteSpace(role) || !Enum.TryParse<UserRole>(role, out var r)
                 ? null
                 : r;
-        var result = userService.Get(limit == default ? 10 : limit, offset, out var total,
+        limit = limit == default ? 10 : limit;
+        var result = userService.Get(limit, offset, out var total,
             orderBy, emailAddress, roleFilter, firstName, lastName);
-        return Ok(ResponseFactory.WithSuccess(total, offset, result));
+        var (nextOffset, previousOffset) = ComputePaginationOffsets(limit, offset);
+        return Ok(ResponseFactory.WithSuccess(total, offset, result,
+            nextOffset < total
+                ? Url.Action(nameof(Get), new
+                {
+                    limit, offset = nextOffset, orderBy,
+                    emailAddress, role, firstName, lastName
+                })
+                : null,
+            offset > 0
+                ? Url.Action(nameof(Get), new
+                {
+                    limit, offset = previousOffset, orderBy,
+                    emailAddress, role, firstName, lastName
+                })
+                : null));
     }
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]

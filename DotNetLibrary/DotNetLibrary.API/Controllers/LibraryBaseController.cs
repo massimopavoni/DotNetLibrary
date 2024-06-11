@@ -11,6 +11,13 @@ public class LibraryBaseController : ControllerBase
     [NonAction]
     protected virtual ForbiddenObjectResult Forbidden([ActionResultObjectValue] object? value) =>
         new(value);
+
+    [NonAction]
+    protected virtual (int, int) ComputePaginationOffsets(int limit, int offset)
+    {
+        var previousOffset = offset - limit;
+        return (offset + limit, previousOffset < 0 ? 0 : previousOffset);
+    }
 }
 
 [DefaultStatusCode(StatusCodes.Status403Forbidden)]

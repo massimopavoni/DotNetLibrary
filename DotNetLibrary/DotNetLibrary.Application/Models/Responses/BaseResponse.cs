@@ -7,7 +7,9 @@ public class BaseResponse<T>(
     ICollection<string>? errors = null,
     int? total = null,
     int? offset = null,
-    T? result = default)
+    T? result = default,
+    string? next = null,
+    string? previous = null)
 {
     public bool Success { get; } = success;
 
@@ -22,4 +24,11 @@ public class BaseResponse<T>(
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public T? Result { get; } = result;
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Next { get; } = next;
+    
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Previous { get; } = previous;
+    
 }

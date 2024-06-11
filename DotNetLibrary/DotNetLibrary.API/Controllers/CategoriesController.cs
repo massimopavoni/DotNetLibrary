@@ -56,9 +56,25 @@ public class CategoriesController(ICategoryService categoryService) : LibraryBas
         ICollection<string> bookISBNsFilter = string.IsNullOrWhiteSpace(bookISBNs)
             ? []
             : bookISBNs.Split(',').ToList();
-        var result = categoryService.Get(limit == default ? 10 : limit, offset, out var total,
+        limit = limit == default ? 10 : limit;
+        var result = categoryService.Get(limit, offset, out var total,
             orderBy, name, description, bookISBNsFilter);
-        return Ok(ResponseFactory.WithSuccess(total, offset, result));
+        var (nextOffset, previousOffset) = ComputePaginationOffsets(limit, offset);
+        return Ok(ResponseFactory.WithSuccess(total, offset, result,
+            nextOffset < total
+                ? Url.Action(nameof(Get), new
+                {
+                    limit, offset = nextOffset, orderBy,
+                    name, description, bookISBNs
+                })
+                : null,
+            offset > 0
+                ? Url.Action(nameof(Get), new
+                {
+                    limit, offset = previousOffset, orderBy,
+                    name, description, bookISBNs
+                })
+                : null));
     }
 
     [HttpPatch("{name}")]
