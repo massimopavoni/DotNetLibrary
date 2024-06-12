@@ -76,13 +76,6 @@ public class BookService(
             book.PublicationDate = newBook.PublicationDate.ToDateTime(TimeOnly.MinValue);
         if (!string.IsNullOrWhiteSpace(newBook.Publisher))
             book.Publisher = newBook.Publisher;
-        // if (newBook.CategoryNames.Count != 0)
-        //     book.BookCategories = newBook.CategoryNames.Select(cn =>
-        //         new BookCategory
-        //         {
-        //             BookISBN = newBook.ISBN,
-        //             CategoryName = cn
-        //         }).ToList();
         return UsingTransaction(() =>
         {
             bookRepository.Update(book);

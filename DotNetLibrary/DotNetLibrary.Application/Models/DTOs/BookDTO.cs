@@ -38,12 +38,6 @@ public class BookDTO(
             Author = Author,
             PublicationDate = PublicationDate.ToDateTime(TimeOnly.MinValue),
             Publisher = Publisher
-            // BookCategories = CategoryNames.Select(cn =>
-            //     new BookCategory
-            //     {
-            //         BookISBN = ISBN,
-            //         CategoryName = cn
-            //     }).ToList()
         };
         return book;
     }
